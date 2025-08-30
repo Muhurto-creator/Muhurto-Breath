@@ -35,6 +35,10 @@ const cyclesValue = document.getElementById('cycles-value');
 const lightThemeButton = document.getElementById('light-theme-button');
 const darkThemeButton = document.getElementById('dark-theme-button');
 
+// Sensory toggles
+const hapticToggle = document.getElementById('haptic-toggle');
+const voiceToggle = document.getElementById('voice-toggle');
+
 // --- SETTINGS & STATE ---
 let settings = {
     inhale: 4,
@@ -42,7 +46,9 @@ let settings = {
     exhale: 4,
     rest: 4,
     totalCycles: 10,
-    theme: 'dark'
+    theme: 'dark',
+    hapticsEnabled: true,
+    voiceEnabled: false
 };
 
 let currentCycle = 0;
@@ -71,6 +77,23 @@ function updateUIDisplays() {
 }
 
 /**
+ * Speaks the given text using the browser's Speech Synthesis API.
+ * @param {string} text - The text to be spoken.
+ */
+async function speak(text) {
+    if (!settings.voiceEnabled || !('speechSynthesis' in window)) {
+        return;
+    }
+    // If there's already something speaking, cancel it to prevent overlap
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.pitch = 0.9;
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+}
+
+/**
  * The main breathing animation loop.
  */
 function startBreathingCycle() {
@@ -84,28 +107,32 @@ function startBreathingCycle() {
 
     // 1. Inhale
     instructionText.textContent = 'Inhale';
+    speak('Inhale');
     breathingCircle.style.transition = `transform ${settings.inhale}s ease-in-out`;
     breathingCircle.classList.add('growing');
-    if ('vibrate' in navigator) navigator.vibrate(50);
+    if (settings.hapticsEnabled && 'vibrate' in navigator) navigator.vibrate(50);
 
     // 2. Hold
     setTimeout(() => {
         instructionText.textContent = 'Hold';
-        if ('vibrate' in navigator) navigator.vibrate(50);
+        speak('Hold');
+        if (settings.hapticsEnabled && 'vibrate' in navigator) navigator.vibrate(50);
     }, settings.inhale * 1000);
 
     // 3. Exhale
     setTimeout(() => {
         instructionText.textContent = 'Exhale';
+        speak('Exhale');
         breathingCircle.classList.remove('growing');
         breathingCircle.style.transition = `transform ${settings.exhale}s ease-in-out`;
-        if ('vibrate' in navigator) navigator.vibrate(50);
+        if (settings.hapticsEnabled && 'vibrate' in navigator) navigator.vibrate(50);
     }, (settings.inhale + settings.hold) * 1000);
 
     // 4. Rest
     setTimeout(() => {
         instructionText.textContent = 'Rest';
-        if ('vibrate' in navigator) navigator.vibrate(50);
+        speak('Rest');
+        if (settings.hapticsEnabled && 'vibrate' in navigator) navigator.vibrate(50);
     }, (settings.inhale + settings.hold + settings.exhale) * 1000);
 
     // 5. Schedule next cycle
@@ -199,6 +226,24 @@ darkThemeButton.addEventListener('click', () => {
     saveSettings();
 });
 
+// Sensory Toggles
+hapticToggle.addEventListener('click', () => {
+    settings.hapticsEnabled = !settings.hapticsEnabled;
+    hapticToggle.classList.toggle('active');
+    hapticToggle.textContent = settings.hapticsEnabled ? 'On' : 'Off';
+    saveSettings();
+});
+
+voiceToggle.addEventListener('click', () => {
+    settings.voiceEnabled = !settings.voiceEnabled;
+    voiceToggle.classList.toggle('active');
+    voiceToggle.textContent = settings.voiceEnabled ? 'On' : 'Off';
+    saveSettings();
+    if (settings.voiceEnabled) {
+        speak('Voice guidance enabled.');
+    }
+});
+
 // --- PERSISTENCE (localStorage) ---
 
 /**
@@ -233,6 +278,22 @@ function loadSettings() {
     } else {
         document.body.classList.remove('light-theme');
     }
+
+    // Apply haptic and voice settings to UI
+    hapticToggle.textContent = settings.hapticsEnabled ? 'On' : 'Off';
+    if (settings.hapticsEnabled) {
+        hapticToggle.classList.add('active');
+    } else {
+        hapticToggle.classList.remove('active');
+    }
+
+    voiceToggle.textContent = settings.voiceEnabled ? 'On' : 'Off';
+    if (settings.voiceEnabled) {
+        voiceToggle.classList.add('active');
+    } else {
+        voiceToggle.classList.remove('active');
+    }
+
 
     updateUIDisplays();
 }
