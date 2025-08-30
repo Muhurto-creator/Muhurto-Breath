@@ -18,6 +18,65 @@
                 <button id="ai-help-button">?</button>
             </footer>
         </section>
+
+        <!-- Settings Panel -->
+        <section id="settings-screen" class="hidden">
+            <div id="settings-panel">
+                <h2>Settings</h2>
+
+                <div class="setting-row">
+                    <label for="inhale-value">Inhale Duration</label>
+                    <div class="setting-controls">
+                        <button class="control-button" id="inhale-minus">-</button>
+                        <span id="inhale-value" class="setting-value">4s</span>
+                        <button class="control-button" id="inhale-plus">+</button>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <label for="hold-value">Hold Duration</label>
+                    <div class="setting-controls">
+                        <button class="control-button" id="hold-minus">-</button>
+                        <span id="hold-value" class="setting-value">4s</span>
+                        <button class="control-button" id="hold-plus">+</button>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <label for="exhale-value">Exhale Duration</label>
+                    <div class="setting-controls">
+                        <button class="control-button" id="exhale-minus">-</button>
+                        <span id="exhale-value" class="setting-value">4s</span>
+                        <button class="control-button" id="exhale-plus">+</button>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <label for="rest-value">Rest Duration</label>
+                    <div class="setting-controls">
+                        <button class="control-button" id="rest-minus">-</button>
+                        <span id="rest-value" class="setting-value">4s</span>
+                        <button class="control-button" id="rest-plus">+</button>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <label for="cycles-value">Total Cycles</label>
+                    <div class="setting-controls">
+                        <button class="control-button" id="cycles-minus">-</button>
+                        <span id="cycles-value" class="setting-value">10</span>
+                        <button class="control-button" id="cycles-plus">+</button>
+                    </div>
+                </div>
+
+                <div id="theme-switcher">
+                    <button id="light-theme-button">Light Theme</button>
+                    <button id="dark-theme-button">Dark Theme</button>
+                </div>
+
+                <button id="close-settings-button">Close</button>
+            </div>
+        </section>
     </main>
     <script src="script.js"></script>
 </body>

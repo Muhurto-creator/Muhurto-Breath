@@ -74,3 +74,142 @@ body {
     color: #EAEAEA;
     text-shadow: 0 0 10px #00F6F6; /* Subtle glow */
 }
+
+/* SECTION 2: THE LAW OF THE SINGLE SPACE (Settings Panel) */
+
+.hidden {
+    display: none !important; /* Use !important to ensure it overrides other display properties */
+}
+
+#settings-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark, transparent overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#settings-panel {
+    background-color: #1a1a1a; /* Slightly lighter than main background */
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    border: 1px solid #00F6F6;
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Law of Spaciousness */
+}
+
+#settings-panel h2 {
+    color: #00F6F6;
+    text-align: center;
+    margin-top: 0;
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.setting-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.control-button {
+    background: none;
+    border: 1px solid #00F6F6;
+    color: #00F6F6;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.control-button:hover {
+    background-color: #00F6F6;
+    color: #0D0D0D;
+}
+
+.setting-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: center;
+}
+
+#theme-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#theme-switcher button,
+#close-settings-button {
+    background-color: transparent;
+    border: 1px solid #00F6F6;
+    color: #00F6F6;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+#theme-switcher button:hover,
+#close-settings-button:hover {
+    background-color: #00F6F6;
+    color: #0D0D0D;
+}
+
+/* SECTION 1, LAW 1 (Light Theme) */
+body.light-theme {
+    background-color: #EAEAEA;
+    color: #0D0D0D;
+}
+
+.light-theme #breathing-circle {
+    border-color: #0D0D0D;
+}
+
+.light-theme #controls button {
+    color: #0D0D0D;
+}
+
+.light-theme #settings-panel {
+    background-color: #f5f5f5;
+    border-color: #0D0D0D;
+}
+
+.light-theme #settings-panel h2,
+.light-theme .control-button,
+.light-theme #theme-switcher button,
+.light-theme #close-settings-button {
+    color: #0D0D0D;
+    border-color: #0D0D0D;
+}
+
+.light-theme .control-button:hover,
+.light-theme #theme-switcher button:hover,
+.light-theme #close-settings-button:hover {
+    background-color: #0D0D0D;
+    color: #EAEAEA;
+}
