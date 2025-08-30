@@ -42,6 +42,11 @@ body {
     border: 4px solid #00F6F6; /* Primary accent color */
     border-radius: 50%;
     background-color: transparent;
+    transition: transform 4s ease-in-out; /* Law of Organic Motion */
+}
+
+.growing {
+    transform: scale(1.5);
 }
 
 #cycle-counter {
