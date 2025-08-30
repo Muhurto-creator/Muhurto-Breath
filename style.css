@@ -213,3 +213,131 @@ body.light-theme {
     background-color: #0D0D0D;
     color: #EAEAEA;
 }
+
+/* SECTION 3: THE LAW OF THE ORACLE (AI Chat Panel) */
+
+#ai-chat-screen {
+    /* Identical to settings-screen for consistency */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#ai-chat-panel {
+    /* Consistent with settings-panel */
+    background-color: #1a1a1a;
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    border: 1px solid #00F6F6;
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Law of Spaciousness */
+    text-align: center;
+}
+
+#ai-chat-panel h2 {
+    /* Consistent with settings-panel h2 */
+    color: #00F6F6;
+    text-align: center;
+    margin-top: 0;
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+#ai-response-area {
+    min-height: 100px;
+    border: 1px dashed rgba(0, 246, 246, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#ai-response-area p {
+    margin: 0;
+}
+
+#ai-response-area .ai-recommendation-text {
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+#ai-input-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#ai-prompt-input {
+    flex-grow: 1;
+    background-color: #0D0D0D;
+    border: 1px solid #00F6F6;
+    color: #EAEAEA;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+
+#ai-prompt-input::placeholder {
+    color: #888;
+}
+
+#send-to-ai-button,
+#close-ai-button,
+.apply-rhythm-button {
+    /* Consistent with other buttons */
+    background-color: transparent;
+    border: 1px solid #00F6F6;
+    color: #00F6F6;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    white-space: nowrap;
+}
+
+#send-to-ai-button:hover,
+#close-ai-button:hover,
+.apply-rhythm-button:hover {
+    background-color: #00F6F6;
+    color: #0D0D0D;
+}
+
+/* Light theme adjustments for AI panel */
+.light-theme #ai-chat-panel {
+    background-color: #f5f5f5;
+    border-color: #0D0D0D;
+}
+
+.light-theme #ai-chat-panel h2,
+.light-theme #send-to-ai-button,
+.light-theme #close-ai-button,
+.light-theme .apply-rhythm-button {
+    color: #0D0D0D;
+    border-color: #0D0D0D;
+}
+
+.light-theme #ai-prompt-input {
+    background-color: #EAEAEA;
+    border-color: #0D0D0D;
+    color: #0D0D0D;
+}
+
+.light-theme #send-to-ai-button:hover,
+.light-theme #close-ai-button:hover,
+.light-theme .apply-rhythm-button:hover {
+    background-color: #0D0D0D;
+    color: #EAEAEA;
+}

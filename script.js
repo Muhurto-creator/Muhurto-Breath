@@ -8,6 +8,7 @@
 // Main screen elements
 const startButton = document.getElementById('start-button');
 const settingsButton = document.getElementById('settings-button');
+const aiHelpButton = document.getElementById('ai-help-button');
 const breathingCircle = document.getElementById('breathing-circle');
 const instructionText = document.getElementById('instruction-text');
 const cycleCounter = document.getElementById('cycle-counter');
@@ -15,6 +16,13 @@ const cycleCounter = document.getElementById('cycle-counter');
 // Settings screen elements
 const settingsScreen = document.getElementById('settings-screen');
 const closeSettingsButton = document.getElementById('close-settings-button');
+
+// AI chat screen elements
+const aiChatScreen = document.getElementById('ai-chat-screen');
+const closeAiButton = document.getElementById('close-ai-button');
+const sendToAiButton = document.getElementById('send-to-ai-button');
+const aiPromptInput = document.getElementById('ai-prompt-input');
+const aiResponseArea = document.getElementById('ai-response-area');
 
 // Setting value displays
 const inhaleValue = document.getElementById('inhale-value');
@@ -150,6 +158,15 @@ function handleSettingChange(key, amount, min, max) {
     }
 }
 
+// AI screen controls
+aiHelpButton.addEventListener('click', () => {
+    aiChatScreen.classList.remove('hidden');
+});
+
+closeAiButton.addEventListener('click', () => {
+    aiChatScreen.classList.add('hidden');
+});
+
 // Attach listeners to all control buttons
 document.getElementById('inhale-minus').addEventListener('click', () => handleSettingChange('inhale', -1, 1, 20));
 document.getElementById('inhale-plus').addEventListener('click', () => handleSettingChange('inhale', 1, 1, 20));
@@ -212,6 +229,90 @@ function loadSettings() {
 
     updateUIDisplays();
 }
+
+
+// --- AI INTEGRATION ---
+
+/**
+ * Displays the AI's response and provides an action button.
+ * @param {object} data - The parsed JSON object from the AI.
+ */
+function displayAIResponse(data) {
+    aiResponseArea.innerHTML = ''; // Clear previous content
+
+    const recommendation = document.createElement('p');
+    recommendation.className = 'ai-recommendation-text';
+    recommendation.textContent = data.recommendationText;
+
+    const applyButton = document.createElement('button');
+    applyButton.className = 'apply-rhythm-button';
+    applyButton.textContent = 'Apply this rhythm';
+
+    applyButton.addEventListener('click', () => {
+        // Update settings object with AI's suggestion
+        settings.inhale = data.settings.inhale;
+        settings.hold = data.settings.hold;
+        settings.exhale = data.settings.exhale;
+        settings.rest = data.settings.rest;
+        settings.totalCycles = data.settings.totalCycles;
+
+        saveSettings();
+        updateUIDisplays();
+        resetApp(); // Reset to apply new settings immediately if running
+
+        aiChatScreen.classList.add('hidden'); // Close the panel
+    });
+
+    aiResponseArea.appendChild(recommendation);
+    aiResponseArea.appendChild(applyButton);
+}
+
+/**
+ * Handles the logic for sending a query to the AI function.
+ */
+async function handleSendToAI() {
+    const userQuery = aiPromptInput.value.trim();
+    if (!userQuery) {
+        aiResponseArea.innerHTML = '<p>Please tell me how you are feeling.</p>';
+        return;
+    }
+
+    // Provide immediate feedback
+    aiResponseArea.innerHTML = '<p>Thinking...</p>';
+    sendToAiButton.disabled = true;
+
+    try {
+        const response = await fetch('/.netlify/functions/ask-ai', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query: userQuery }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayAIResponse(data);
+
+    } catch (error) {
+        console.error('Error fetching AI response:', error);
+        aiResponseArea.innerHTML = `<p>Sorry, I couldn't connect to the guide. Please check your connection and try again. <br><small>${error.message}</small></p>`;
+    } finally {
+        sendToAiButton.disabled = false;
+        aiPromptInput.value = ''; // Clear the input
+    }
+}
+
+sendToAiButton.addEventListener('click', handleSendToAI);
+aiPromptInput.addEventListener('keyup', (event) => {
+    if (event.key === 'Enter') {
+        handleSendToAI();
+    }
+});
 
 
 // --- INITIALIZATION ---
