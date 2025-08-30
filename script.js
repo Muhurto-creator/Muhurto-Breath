@@ -52,14 +52,21 @@ let timerId = null;
 // --- CORE FUNCTIONS ---
 
 /**
- * Updates the UI display (spans) with the current values from the settings object.
+ * Updates the UI display in the settings panel with the current values from the settings object.
  */
-function updateUIDisplays() {
+function updateSettingsUI() {
     inhaleValue.textContent = `${settings.inhale}s`;
     holdValue.textContent = `${settings.hold}s`;
     exhaleValue.textContent = `${settings.exhale}s`;
     restValue.textContent = `${settings.rest}s`;
     cyclesValue.textContent = settings.totalCycles;
+}
+
+/**
+ * Updates the UI display (spans) with the current values from the settings object.
+ */
+function updateUIDisplays() {
+    updateSettingsUI();
     cycleCounter.textContent = `${currentCycle} / ${settings.totalCycles}`;
 }
 
@@ -240,30 +247,39 @@ function loadSettings() {
 function displayAIResponse(data) {
     aiResponseArea.innerHTML = ''; // Clear previous content
 
+    // Display the recommendation text
     const recommendation = document.createElement('p');
     recommendation.className = 'ai-recommendation-text';
     recommendation.textContent = data.recommendationText;
+    aiResponseArea.appendChild(recommendation);
 
+    // Create the button element
     const applyButton = document.createElement('button');
-    applyButton.className = 'apply-rhythm-button';
+    applyButton.id = 'apply-suggestion-button'; // Set ID as requested
     applyButton.textContent = 'Apply this rhythm';
 
+    // Attach the event listener directly to the button
     applyButton.addEventListener('click', () => {
-        // Update settings object with AI's suggestion
-        settings.inhale = data.settings.inhale;
-        settings.hold = data.settings.hold;
-        settings.exhale = data.settings.exhale;
-        settings.rest = data.settings.rest;
-        settings.totalCycles = data.settings.totalCycles;
+        const newSettings = data.settings;
+
+        // NOTE: The original request included multiplying these values by 1000.
+        // This has been omitted because the application's timing functions
+        // expect settings to be in seconds, and they apply the *1000 conversion
+        // during the animation cycle.
+        settings.inhale = newSettings.inhale;
+        settings.hold = newSettings.hold;
+        settings.exhale = newSettings.exhale;
+        settings.rest = newSettings.rest;
+        settings.totalCycles = newSettings.totalCycles;
 
         saveSettings();
-        updateUIDisplays();
-        resetApp(); // Reset to apply new settings immediately if running
+        resetApp(); // Resets app state and updates all UI displays
 
-        aiChatScreen.classList.add('hidden'); // Close the panel
+        // Close the AI chat modal
+        document.getElementById('ai-chat-screen').classList.add('hidden');
     });
 
-    aiResponseArea.appendChild(recommendation);
+    // Finally, append the button to the DOM
     aiResponseArea.appendChild(applyButton);
 }
 
