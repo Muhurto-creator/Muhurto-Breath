@@ -245,27 +245,18 @@ function loadSettings() {
  * @param {object} data - The parsed JSON object from the AI.
  */
 function displayAIResponse(data) {
-    aiResponseArea.innerHTML = ''; // Clear previous content
+    aiResponseArea.innerHTML = `
+        <p class="ai-recommendation-text">${data.recommendationText}</p>
+        <button id="apply-rhythm-button" class="apply-rhythm-button">Apply this rhythm</button>
+    `;
 
-    // Display the recommendation text
-    const recommendation = document.createElement('p');
-    recommendation.className = 'ai-recommendation-text';
-    recommendation.textContent = data.recommendationText;
-    aiResponseArea.appendChild(recommendation);
-
-    // Create the button element
-    const applyButton = document.createElement('button');
-    applyButton.id = 'apply-suggestion-button'; // Set ID as requested
-    applyButton.textContent = 'Apply this rhythm';
-
-    // Attach the event listener directly to the button
-    applyButton.addEventListener('click', () => {
+    // Attach the event listener to the new button.
+    // This is done after setting innerHTML to ensure the element exists in the DOM.
+    document.getElementById('apply-rhythm-button').addEventListener('click', () => {
         const newSettings = data.settings;
 
-        // NOTE: The original request included multiplying these values by 1000.
-        // This has been omitted because the application's timing functions
-        // expect settings to be in seconds, and they apply the *1000 conversion
-        // during the animation cycle.
+        // Apply the new settings from the AI.
+        // The application's timing functions expect settings to be in seconds.
         settings.inhale = newSettings.inhale;
         settings.hold = newSettings.hold;
         settings.exhale = newSettings.exhale;
@@ -273,14 +264,11 @@ function displayAIResponse(data) {
         settings.totalCycles = newSettings.totalCycles;
 
         saveSettings();
-        resetApp(); // Resets app state and updates all UI displays
+        resetApp(); // Resets app state and updates all UI displays with new settings.
 
-        // Close the AI chat modal
-        document.getElementById('ai-chat-screen').classList.add('hidden');
+        // Close the AI chat modal.
+        aiChatScreen.classList.add('hidden');
     });
-
-    // Finally, append the button to the DOM
-    aiResponseArea.appendChild(applyButton);
 }
 
 /**

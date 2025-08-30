@@ -214,6 +214,38 @@ body.light-theme {
     color: #EAEAEA;
 }
 
+/* --- RESPONSIVENESS (The Test of All Canvases) --- */
+
+/* Tablet View */
+@media (min-width: 768px) {
+    #instruction-text {
+        font-size: 3rem;
+    }
+
+    #breathing-circle {
+        width: 250px;
+        height: 250px;
+    }
+
+    #settings-panel,
+    #ai-chat-panel {
+        max-width: 600px;
+        font-size: 1.3rem;
+    }
+}
+
+/* Desktop View */
+@media (min-width: 1024px) {
+    #instruction-text {
+        font-size: 3.5rem;
+    }
+
+    #breathing-circle {
+        width: 300px;
+        height: 300px;
+    }
+}
+
 /* SECTION 3: THE LAW OF THE ORACLE (AI Chat Panel) */
 
 #ai-chat-screen {
