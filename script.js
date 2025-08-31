@@ -204,6 +204,10 @@ closeSettingsButton.addEventListener('click', () => {
 
 // AI screen controls
 aiHelpButton.addEventListener('click', () => {
+    // Set the initial, welcoming message when the modal is opened.
+    aiResponseArea.innerHTML = `<p>Tell me how you're feeling, and I'll suggest a breathing rhythm to help.</p>`;
+    aiPromptInput.value = ''; // Clear previous input
+    sendToAiButton.disabled = false; // Ensure button is enabled
     aiChatScreen.classList.remove('hidden');
 });
 
@@ -337,15 +341,18 @@ function loadSettings() {
  * AI. This is a critical security measure.
  */
 async function handleSendToAI() {
+    console.log("handleSendToAI called"); // Debugging line
     const userQuery = aiPromptInput.value.trim();
     if (!userQuery) {
-        aiResponseArea.innerHTML = '<p>Please tell me how you are feeling.</p>';
+        // The welcome message already handles this, but as a fallback.
+        aiResponseArea.innerHTML = '<p>Please tell me how you are feeling first.</p>';
         return;
     }
 
-    // Provide immediate feedback to the user and prevent multiple submissions.
-    aiResponseArea.innerHTML = '<p>Thinking...</p>';
+    // 1. Implement the "Thinking" state.
+    aiResponseArea.innerHTML = '<p class="thinking">Thinking...</p>';
     sendToAiButton.disabled = true;
+    aiPromptInput.disabled = true;
 
     try {
         const response = await fetch('/.netlify/functions/ask-ai', {
@@ -354,23 +361,26 @@ async function handleSendToAI() {
             body: JSON.stringify({ query: userQuery }),
         });
 
-        // The `fetch` API doesn't throw an error for HTTP error statuses (like 4xx, 5xx),
-        // so we must check the `response.ok` property and throw an error ourselves.
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+
+        // 2. Handle Success and Failure based on the standardized response.
+        if (data.error) {
+            // The backend sent our standardized error message.
+            displayAIError(data.error);
+        } else {
+            // Success! Display the AI's recommendation.
+            displayAIResponse(data);
         }
 
-        const data = await response.json();
-        displayAIResponse(data);
-
     } catch (error) {
+        // This catches network errors or if the server is completely down.
         console.error('Error fetching AI response:', error);
-        aiResponseArea.innerHTML = `<p>Sorry, I couldn't connect to the guide. Please check your connection and try again. <br><small>${error.message}</small></p>`;
+        displayAIError("The AI guide is currently unavailable. Please try again later.");
     } finally {
-        // Re-enable the button and clear the input, regardless of success or failure.
+        // 3. Re-enable the input fields for the next query.
         sendToAiButton.disabled = false;
-        aiPromptInput.value = '';
+        aiPromptInput.disabled = false;
+        aiPromptInput.value = ''; // Clear input after sending.
     }
 }
 
@@ -406,6 +416,18 @@ function displayAIResponse(data) {
     });
 
     aiResponseArea.appendChild(applyButton);
+}
+
+/**
+ * Renders a standardized error message in the AI response area.
+ * @param {string} message - The error message to display.
+ */
+function displayAIError(message) {
+    aiResponseArea.innerHTML = ''; // Clear "Thinking..." message.
+    const errorP = document.createElement('p');
+    errorP.className = 'ai-error-text';
+    errorP.textContent = message;
+    aiResponseArea.appendChild(errorP);
 }
 
 // Attach listeners for the AI input field (both button click and 'Enter' key).

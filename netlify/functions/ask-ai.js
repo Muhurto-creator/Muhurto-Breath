@@ -9,112 +9,130 @@
 // `node-fetch` is automatically available in the Netlify environment.
 
 exports.handler = async (event) => {
-    // --- 1. Security First: Validate Request Method ---
-    // (AGENTS.MD, Section 2, Law 3: The Sanctuary's Gate)
-    // We only accept POST requests to this endpoint. This is a standard
-    // security practice for endpoints that receive data.
-    if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405, // 405 Method Not Allowed
-            body: JSON.stringify({ error: 'Method Not Allowed. Please use POST.' }),
-            headers: { 'Allow': 'POST' } // Let the client know which method is expected.
-        };
-    }
+    // --- 1. Define Standardized Error Response ---
+    // A single, consistent error message for the frontend.
+    const standardErrorResponse = {
+        statusCode: 500,
+        body: JSON.stringify({ error: "The AI guide is currently unavailable. Please try again later." })
+    };
 
     try {
-        // --- 2. Input Validation: Parse and Check the User's Query ---
+        // --- 2. Security and Input Validation ---
+        if (event.httpMethod !== 'POST') {
+            return {
+                statusCode: 405,
+                body: JSON.stringify({ error: 'Method Not Allowed. Please use POST.' }),
+                headers: { 'Allow': 'POST' }
+            };
+        }
+
         const { query } = JSON.parse(event.body);
         if (!query) {
             return {
-                statusCode: 400, // 400 Bad Request
+                statusCode: 400,
                 body: JSON.stringify({ error: 'Bad Request. "query" is required.' }),
             };
         }
 
         // --- 3. Securely Access the API Key ---
-        // The API key is stored as an environment variable in the Netlify UI,
-        // NEVER in the code itself.
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            // This is a server-side configuration error, not the client's fault.
             console.error('FATAL: GEMINI_API_KEY is not set in environment variables.');
-            return {
-                statusCode: 500, // 500 Internal Server Error
-                body: JSON.stringify({ error: 'Internal Server Error: The AI guide is not configured correctly.' }),
-            };
+            return standardErrorResponse;
         }
 
-        // --- 4. Prepare the Request to the Gemini API ---
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-        // This is the "prompt engineering" part. We give the AI a very specific
-        // role and a strict output format. This ensures we always get back
-        // a predictable JSON object that our frontend can parse.
+        // --- 4. The Unbreakable System Prompt ---
+        // This new prompt is extremely rigid to prevent deviation.
         const systemPrompt = `
-            You are a calm, empathetic breathing coach. A user feels: "${query}".
-            Analyze this feeling and provide a suitable breathing exercise.
-            Your response MUST be ONLY a JSON object with this exact structure:
-            {
-                "recommendationText": "A short, calming message for the user.",
-                "settings": {
-                    "inhale": 4,
-                    "hold": 7,
-                    "exhale": 8,
-                    "rest": 0,
-                    "totalCycles": 12
-                }
-            }
-            Do not include any other text, markdown formatting, or code fences.
+        You are a specialized API endpoint. Your only function is to analyze a user's feeling and return a JSON object containing a breathing exercise. You must adhere to the following rules with absolute precision:
+
+        **Rule 1: Your ONLY output MUST be a single, valid JSON object.**
+        **Rule 2: The JSON object MUST have this exact structure: { "recommendationText": "string", "settings": { "inhale": number, "hold": number, "exhale": number, "rest": number, "totalCycles": number } }.**
+        **Rule 3: The "recommendationText" should be a short, empathetic message (max 25 words) and based on the user's query: ${query}.**
+        **Rule 4: The "settings" values must be in whole seconds.**
+
+        Here is an example of a perfect interaction:
+        User Input: "I can't sleep"
+        Your Output:
+        {
+          "recommendationText": "To calm your mind for sleep, let's try the 4-7-8 breath. It is deeply relaxing.",
+          "settings": {
+            "inhale": 4,
+            "hold": 7,
+            "exhale": 8,
+            "rest": 0,
+            "totalCycles": 10
+          }
+        }
+
+        Under no circumstances should you ever write any text, explanation, or markdown formatting outside of this JSON object. Your entire response is this JSON object and nothing else.
         `;
 
+        // --- 5. Prepare the Request to the Gemini API ---
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
         const requestBody = {
-            contents: [{
-                parts: [{ text: systemPrompt }]
-            }],
-            // This tells Gemini to ensure its output is valid JSON.
+            contents: [{ parts: [{ text: systemPrompt }] }],
             generationConfig: {
                 "response_mime_type": "application/json",
+                // This schema enforces the exact output structure at the API level.
+                "responseSchema": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "recommendationText": { "type": "STRING" },
+                        "settings": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "inhale": { "type": "NUMBER" },
+                                "hold": { "type": "NUMBER" },
+                                "exhale": { "type": "NUMBER" },
+                                "rest": { "type": "NUMBER" },
+                                "totalCycles": { "type": "NUMBER" }
+                            },
+                            "required": ["inhale", "hold", "exhale", "rest", "totalCycles"]
+                        }
+                    },
+                    "required": ["recommendationText", "settings"]
+                }
             }
         };
 
-        // --- 5. Execute the API Call ---
+        // --- 6. Execute the API Call ---
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody),
         });
 
-        // Handle errors from the Gemini API itself.
         if (!response.ok) {
             const errorBody = await response.text();
             console.error('Gemini API request failed:', response.status, errorBody);
-            return {
-                statusCode: response.status,
-                body: JSON.stringify({ error: `The AI guide is currently unavailable. ${errorBody}` }),
-            };
+            return standardErrorResponse;
         }
 
         const data = await response.json();
 
-        // --- 6. Process and Return the Response ---
-        // The Gemini API, even in JSON mode, wraps its response. We need to extract
-        // the actual text content, which is our desired JSON string.
-        const aiResponseText = data.candidates[0].content.parts[0].text;
+        // --- 7. Validate and Return the Response ---
+        // Even with all the guards, we do a final check.
+        const aiResponseText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!aiResponseText) {
+             console.error('Invalid AI response structure:', JSON.stringify(data, null, 2));
+             return standardErrorResponse;
+        }
 
-        // Return the clean JSON string directly to our frontend client.
+        // The response text *should* be a perfect JSON string.
+        // We'll parse it here to be 100% sure before sending to the client.
+        JSON.parse(aiResponseText);
+
         return {
             statusCode: 200,
-            body: aiResponseText, // This is already a JSON string, no need to stringify again.
+            body: aiResponseText,
             headers: { 'Content-Type': 'application/json' }
         };
 
     } catch (error) {
-        // --- 7. Generic Error Handling ---
-        // Catches any other errors, like JSON parsing failures or network issues.
+        // --- 8. Generic Error Handling ---
         console.error('An unexpected error occurred in the ask-ai function:', error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: `An internal server error occurred: ${error.message}` }),
-        };
+        return standardErrorResponse;
     }
 };
