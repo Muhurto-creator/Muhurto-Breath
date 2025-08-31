@@ -1,15 +1,24 @@
-/* The Unchanging Principles of Muhurto */
-/* SECTION 1: THE LAWS OF SENSATION (The Vibe) */
+/* ==========================================================================
+   The Unchanging Principles of Muhurto
+   This stylesheet is guided by the laws defined in AGENTS.MD.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   SECTION 1: THE LAWS OF SENSATION (The Vibe)
+   -------------------------------------------------------------------------- */
 
 body {
-    background-color: #0D0D0D; /* Law of the Quiet Canvas */
-    color: #EAEAEA; /* Law of the Quiet Canvas */
+    /* Law 1: The Law of the Quiet Canvas */
+    background-color: #0D0D0D;
+    color: #EAEAEA;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #app-container {
@@ -24,14 +33,16 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between; /* Law of Spaciousness */
+    /* Law 3: The Law of the Gentle Guide (Spaciousness) */
+    justify-content: space-between;
     text-align: center;
-    height: 80vh; /* Generous vertical space */
+    height: 80vh;
     padding: 2rem;
 }
 
 #instruction-text {
-    font-size: 2.5rem; /* Clarity Above All */
+    /* Law 3: The Law of the Gentle Guide (Clarity Above All) */
+    font-size: 2.5rem;
     font-weight: 300;
     margin: 0;
     text-shadow: 0 0 5px rgba(0, 246, 246, 0.7), 0 0 10px rgba(0, 246, 246, 0.5);
@@ -44,7 +55,8 @@ body {
     border: 4px solid #00F6F6; /* Primary accent color */
     border-radius: 50%;
     background-color: transparent;
-    transition: transform 4s ease-in-out, box-shadow 4s ease-in-out; /* Law of Organic Motion */
+    /* Law 2: The Law of Organic Motion */
+    transition: transform 4s ease-in-out, box-shadow 4s ease-in-out;
     box-shadow: 0 0 10px #00F6F6, 0 0 20px #00F6F6;
 }
 
@@ -60,7 +72,8 @@ body {
 
 #controls {
     display: flex;
-    gap: 2rem; /* Law of Spaciousness */
+    /* Law 3: The Law of the Gentle Guide (Spaciousness) */
+    gap: 2rem;
 }
 
 #controls button {
@@ -70,22 +83,27 @@ body {
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0.5rem;
-    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out, transform 0.1s ease-in-out; /* Law of Organic Motion */
+    /* Law 2: The Law of Organic Motion */
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out, transform 0.1s ease-in-out;
 }
 
 #controls button:hover {
     color: #EAEAEA;
-    text-shadow: 0 0 5px #00F6F6, 0 0 10px #00F6F6; /* Enhanced glow */
+    text-shadow: 0 0 5px #00F6F6, 0 0 10px #00F6F6; /* Enhanced glow for feedback */
 }
 
-/* SECTION 2: THE LAW OF THE SINGLE SPACE (Settings Panel) */
+/* --------------------------------------------------------------------------
+   SECTION 2: THE LAW OF THE SINGLE SPACE (Modal Panels)
+   -------------------------------------------------------------------------- */
 
 .hidden {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none; /* Prevent interaction when hidden */
 }
 
-#settings-screen {
+#settings-screen,
+#ai-chat-screen {
     position: fixed;
     top: 0;
     left: 0;
@@ -96,10 +114,12 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 100;
+    /* Law 2: The Law of Organic Motion */
     transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
 }
 
-#settings-panel {
+#settings-panel,
+#ai-chat-panel {
     background-color: #1a1a1a; /* Slightly lighter than main background */
     padding: 2rem 3rem;
     border-radius: 15px;
@@ -108,10 +128,12 @@ body {
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Law of Spaciousness */
+    /* Law 3: The Law of the Gentle Guide (Spaciousness) */
+    gap: 1.5rem;
 }
 
-#settings-panel h2 {
+#settings-panel h2,
+#ai-chat-panel h2 {
     color: #00F6F6;
     text-align: center;
     margin-top: 0;
@@ -146,6 +168,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* Law 2: The Law of Organic Motion */
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.1s ease-in-out;
 }
 
@@ -162,6 +185,7 @@ body {
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
+    /* Law 2: The Law of Organic Motion */
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.1s ease-in-out;
     min-width: 60px; /* Ensure 'On' and 'Off' have same width */
     text-align: center;
@@ -189,7 +213,10 @@ body {
 }
 
 #theme-switcher button,
-#close-settings-button {
+#close-settings-button,
+#send-to-ai-button,
+#close-ai-button,
+.apply-rhythm-button {
     background-color: transparent;
     border: 1px solid #00F6F6;
     color: #00F6F6;
@@ -197,16 +224,21 @@ body {
     font-size: 1rem;
     border-radius: 5px;
     cursor: pointer;
+    /* Law 2: The Law of Organic Motion */
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.1s ease-in-out;
+    white-space: nowrap;
 }
 
 #theme-switcher button:hover,
-#close-settings-button:hover {
+#close-settings-button:hover,
+#send-to-ai-button:hover,
+#close-ai-button:hover,
+.apply-rhythm-button:hover {
     background-color: #00F6F6;
     color: #0D0D0D;
 }
 
-/* Click Feedback */
+/* Universal subtle feedback for all interactive elements */
 #controls button:active,
 .control-button:active,
 .toggle-button:active,
@@ -218,79 +250,13 @@ body {
     transform: scale(0.97);
 }
 
-/* SECTION 1, LAW 1 (Light Theme) */
-body.light-theme {
-    background-color: #EAEAEA;
-    color: #0D0D0D;
-}
 
-.light-theme #breathing-circle {
-    border-color: #0D0D0D;
-}
-
-.light-theme #controls button {
-    color: #0D0D0D;
-}
-
-.light-theme #settings-panel {
-    background-color: #f5f5f5;
-    border-color: #0D0D0D;
-}
-
-.light-theme #settings-panel h2,
-.light-theme .control-button,
-.light-theme #theme-switcher button,
-.light-theme #close-settings-button {
-    color: #0D0D0D;
-    border-color: #0D0D0D;
-}
-
-.light-theme .control-button:hover,
-.light-theme #theme-switcher button:hover,
-.light-theme #close-settings-button:hover {
-    background-color: #0D0D0D;
-    color: #EAEAEA;
-}
-
-/* SECTION 3: THE LAW OF THE ORACLE (AI Chat Panel) */
-
-#ai-chat-screen {
-    /* Identical to settings-screen for consistency */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
-}
+/* --------------------------------------------------------------------------
+   SECTION 3: THE LAW OF THE ORACLE (AI Chat Panel)
+   -------------------------------------------------------------------------- */
 
 #ai-chat-panel {
-    /* Consistent with settings-panel */
-    background-color: #1a1a1a;
-    padding: 2rem 3rem;
-    border-radius: 15px;
-    border: 1px solid #00F6F6;
-    width: 90%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem; /* Law of Spaciousness */
     text-align: center;
-}
-
-#ai-chat-panel h2 {
-    /* Consistent with settings-panel h2 */
-    color: #00F6F6;
-    text-align: center;
-    margin-top: 0;
-    font-size: 2rem;
-    font-weight: 400;
-    letter-spacing: 0.5px;
 }
 
 #ai-response-area {
@@ -301,6 +267,7 @@ body.light-theme {
     font-size: 1.1rem;
     line-height: 1.6;
     display: flex;
+    flex-direction: column; /* Stack text and button vertically */
     justify-content: center;
     align-items: center;
 }
@@ -333,40 +300,63 @@ body.light-theme {
     color: #888;
 }
 
-#send-to-ai-button,
-#close-ai-button,
-.apply-rhythm-button {
-    /* Consistent with other buttons */
-    background-color: transparent;
-    border: 1px solid #00F6F6;
-    color: #00F6F6;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.1s ease-in-out;
-    white-space: nowrap;
-}
+/* --------------------------------------------------------------------------
+   Light Theme Override
+   This section cleanly overrides the default dark theme styles.
+   -------------------------------------------------------------------------- */
 
-#send-to-ai-button:hover,
-#close-ai-button:hover,
-.apply-rhythm-button:hover {
-    background-color: #00F6F6;
+body.light-theme {
+    background-color: #EAEAEA;
     color: #0D0D0D;
 }
 
-/* Light theme adjustments for AI panel */
+.light-theme #breathing-circle {
+    border-color: #0D0D0D;
+    box-shadow: none; /* Remove glow on light theme for better contrast */
+}
+
+.light-theme #instruction-text {
+    text-shadow: none;
+}
+
+.light-theme #controls button {
+    color: #0D0D0D;
+}
+
+.light-theme #settings-panel,
 .light-theme #ai-chat-panel {
     background-color: #f5f5f5;
     border-color: #0D0D0D;
 }
 
+.light-theme #settings-panel h2,
 .light-theme #ai-chat-panel h2,
+.light-theme .control-button,
+.light-theme .toggle-button,
+.light-theme #theme-switcher button,
+.light-theme #close-settings-button,
 .light-theme #send-to-ai-button,
 .light-theme #close-ai-button,
 .light-theme .apply-rhythm-button {
     color: #0D0D0D;
     border-color: #0D0D0D;
+}
+
+.light-theme .toggle-button.active {
+    background-color: #0D0D0D;
+    color: #EAEAEA;
+    box-shadow: none;
+}
+
+.light-theme .control-button:hover,
+.light-theme .toggle-button:hover,
+.light-theme #theme-switcher button:hover,
+.light-theme #close-settings-button:hover,
+.light-theme #send-to-ai-button:hover,
+.light-theme #close-ai-button:hover,
+.light-theme .apply-rhythm-button:hover {
+    background-color: #0D0D0D;
+    color: #EAEAEA;
 }
 
 .light-theme #ai-prompt-input {
@@ -375,9 +365,6 @@ body.light-theme {
     color: #0D0D0D;
 }
 
-.light-theme #send-to-ai-button:hover,
-.light-theme #close-ai-button:hover,
-.light-theme .apply-rhythm-button:hover {
-    background-color: #0D0D0D;
-    color: #EAEAEA;
+.light-theme #ai-prompt-input::placeholder {
+    color: #555;
 }

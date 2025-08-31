@@ -7,7 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- AGENTS.MD, Section 2, Law 2: The Law of the Single Space -->
+    <!-- The entire app lives within this single container. -->
+    <!-- Different "screens" are just sections that are shown or hidden. -->
     <main id="app-container">
+
+        <!-- Screen 1: The Core Breathing Experience -->
         <section id="breathing-screen">
             <h1 id="instruction-text">Breathe naturally.</h1>
             <div id="breathing-circle"></div>
@@ -19,7 +24,7 @@
             </footer>
         </section>
 
-        <!-- Settings Panel -->
+        <!-- Screen 2: The Settings Panel (Initially Hidden) -->
         <section id="settings-screen" class="hidden">
             <div id="settings-panel">
                 <h2>Settings</h2>
@@ -88,7 +93,7 @@
             </div>
         </section>
 
-        <!-- AI Chat Screen -->
+        <!-- Screen 3: The AI Chat Panel (Initially Hidden) -->
         <section id="ai-chat-screen" class="hidden">
             <div id="ai-chat-panel">
                 <h2>Ask Your Guide</h2>
